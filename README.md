@@ -1,1 +1,1 @@
-Copy the forders to ~/.quodlibet/plugins/
+Copy the folders to ~/.quodlibet/plugins/
