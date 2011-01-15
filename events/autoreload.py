@@ -3,7 +3,6 @@
 import gobject
 from plugins.events import EventPlugin
 from quodlibet import widgets
-from quodlibet.qltk.msg import Message, WarningMessage
 
 class AutoRefresh(EventPlugin):
     PLUGIN_ID = 'Auto Refresh Library Query'
