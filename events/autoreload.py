@@ -7,7 +7,7 @@ from quodlibet import widgets
 class AutoRefresh(EventPlugin):
     PLUGIN_ID = 'Auto Refresh Library Query'
     PLUGIN_NAME = _('Auto Refresh')
-    PLUGIN_DESC = ("Refreshes the currently shown browser query when has song ended.")
+    PLUGIN_DESC = ("Refreshes the currently shown browser when song has ended.")
     PLUGIN_VERSION = "1"
 
     def plugin_on_song_ended(self, song, skipped):
