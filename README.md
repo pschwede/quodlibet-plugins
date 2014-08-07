@@ -3,11 +3,11 @@
 * ~~__Autorefresh__: Reloads the Browser view (in some search queries, by that,
   it makes sure no song is played over and over again or that the playlist
   doesn`t stop)~~
-* ~~__AudioScrobble Submission__: Fork of the official plugin, but with more
+* ~~__AudioScrobble Submission__: Fork of the official plugin with more
   options.~~
-* __AutoSeek__: Skip into the next song and skip after some seconds. Configurable.
-* __AutoCast__: Get a real talk radio rotation by enqueuing a random yet unplayed
-  podcast entry after some seconds of music have been played. Configurable.
+* __AutoSeek__: Plays tracks only a few seconds. Configurable skipping rate.
+* __AutoCast__: Creates a radio rotation between music and talk. Repeatingly
+  enqueues podcast entries after playing music. Configurable seconds of music.
 
 
 ## Installation on Unix
