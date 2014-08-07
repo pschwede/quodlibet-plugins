@@ -16,8 +16,8 @@ _PLUGIN_ID = "autoseek"
 
 _SETTINGS = {
     "seekto": [_("_Seek to:"),
-                  _("Percent of the song to seek to"), 0.33],
-    "skipat": [_("S_kip in:"), _("Play next song after these seconds"), 5.],
+                  _("Part of the song to seek to"), 0.33],
+    "skipat": [_("S_kip at:"), _("Play next song playing these seconds"), 5.],
 }
 
 def get_cfg(option):
