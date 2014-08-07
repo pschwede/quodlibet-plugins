@@ -19,5 +19,7 @@ git clone https://github.com/pschwede/qlplugins.git ~/.quodlibet/plugins/
 or copy the events folder to `~/.quodlibet/plugins/`:
 
 ```bash
-git clone https://github.com/pschwede/qlplugins.git; t=~.quodlibet/plugins/events; mkdir -p $t; cp qlplugins/events/*.py $t
+git clone https://github.com/pschwede/qlplugins.git
+mkdir -p ~.quodlibet/plugins/events/
+cp qlplugins/events/*.py ~.quodlibet/plugins/events/
 ```
