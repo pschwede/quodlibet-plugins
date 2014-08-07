@@ -25,3 +25,5 @@ git clone https://github.com/pschwede/qlplugins.git
 mkdir -p ~.quodlibet/plugins/events/
 cp qlplugins/events/*.py ~.quodlibet/plugins/events/
 ```
+
+You need to restart quodlibet to see and activate the plugins in Music-->Plugins.
