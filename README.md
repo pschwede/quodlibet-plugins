@@ -5,9 +5,11 @@
   doesn`t stop)~~
 * ~~__AudioScrobble Submission__: Fork of the official plugin with more
   options.~~
-* __AutoSeek__: Plays tracks only a few seconds. Configurable skipping rate.
+* __AutoSeek__: Plays only a few seconds of a track. Skipping rate and relative
+  seek position are configurable.
 * __AutoCast__: Creates a radio rotation between music and talk. Repeatingly
-  enqueues podcast entries after playing music. Configurable seconds of music.
+  enqueues podcast entries after playing music. The seconds of music between the
+  podcasts are configurable.
 
 
 ## Installation on Unix
