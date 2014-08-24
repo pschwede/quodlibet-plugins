@@ -1,8 +1,8 @@
 # My Quodlibet plugins
 
-* ~~__Autorefresh__: Reloads the Browser view (in some search queries, by that,
+* __Autorefresh__: Reloads the Browser view (in some search queries, by that,
   it makes sure no song is played over and over again or that the playlist
-  doesn`t stop)~~
+  doesn`t stop)
 * ~~__AudioScrobble Submission__: Fork of the official plugin with more
   options.~~
 * __AutoSeek__: Plays only a few seconds of a track. Skipping rate and relative
