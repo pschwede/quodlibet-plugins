@@ -5,9 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import json
 from os import path
-from gi.repository import Soup, GLib
+from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.http import download_json
@@ -40,10 +39,10 @@ class GPodderCover(CoverSourcePlugin, HTTPDownloadMixin):
         _url = 'http://gpodder.net/search.json?'
         album = self.song.get('album', '').replace(' ', '+')
         album = Soup.URI.encode(album)
-        if self.song.get("~uri", "").startswith("http") and album:
+        if album:
             return _url + 'q="' + album + '"'
         else:
-            return None # Not enough data
+            return None  # Not enough data
 
     def search(self):
         if not self.url:
@@ -73,13 +72,15 @@ class GPodderCover(CoverSourcePlugin, HTTPDownloadMixin):
                         _score += 1
             return _score
 
-        result = [r['scaled_logo_url'] for r in sorted(results, key=score, reverse=True)]
+        result = [r['scaled_logo_url'] for r in sorted(results,
+                                                       key=score,
+                                                       reverse=True)]
+        result = list(set(result))
         self.emit('search-complete', result)
 
     def fetch_cover(self):
         if not self.url:
             return self.fail('Not enough data to get cover from gPodder')
-        print_d(self.url)
 
         def search_complete(self, res):
             self.disconnect(sci)
