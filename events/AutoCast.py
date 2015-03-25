@@ -63,8 +63,8 @@ class Preferences(Gtk.VBox):
             table.attach(label, 0, 1, idx, idx + 1,
                          xoptions=Gtk.AttachOptions.FILL |
                          Gtk.AttachOptions.SHRINK)
-
-        minmusic_scale = Gtk.HScale(adjustment=Gtk.Adjustment(5, 0, 30, 1, 5))
+        # value, lower, upper, step_increment, page_increment
+        minmusic_scale = Gtk.HScale(adjustment=Gtk.Adjustment(5, 0, 60, 1, 5))
         minmusic_scale.set_digits(0)
         minmusic_scale.set_value(get_cfg("minmusic") / 60)
 
@@ -125,18 +125,24 @@ class AutoCast(EventPlugin):
 
     def get_track(self, current_song,
                   preference={"~#length": -1.0, "~#added": 1.0}):
-        """
-        OLD:
-        """
-        feeds_with_items = []
-        filtr = lambda x: '~#playcount' not in x and '~#skipcount' not in x
-        for f in self.__feeds:
-            items = [i for i in f if filtr(i)]
-            if items:
-                feeds_with_items.append(items)
-        feed_items = random.choice(feeds_with_items)
-        item = random.choice([i for i in feed_items])
-        return item
+        items = list()
+        filtr = lambda x: '~#playcount' not in x or \
+                          '~#skipcount' not in x or \
+                          '~#laststarted' > time.time() - 1000000
+        for feed in self.__feeds:
+            filtered = [x for x in feed if filtr(x)]
+            if not filtered:
+                continue
+            i = random.choice(filtered)
+            items.append(i)
+            # for i in f:
+                # if filtr(i):
+                    # items.append(i)
+                # items.append(i)
+        if items:
+            item = random.choice(items)
+            return item
+        return None
         """
         NEW: Take the newest entry. BUT: laststarted won't be saved that way.
         filtr = lambda x: '~#laststarted' not in x
