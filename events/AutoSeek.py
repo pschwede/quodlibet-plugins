@@ -10,7 +10,6 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import qltk
 from quodlibet import config
-from quodlibet.util import gobject_weak
 
 _PLUGIN_ID = "autoseek"
 
@@ -19,6 +18,7 @@ _SETTINGS = {
                   _("Part of the song to seek to"), 0.33],
     "skipat": [_("S_kip at:"), _("Play next song playing these seconds"), 5.],
 }
+
 
 def get_cfg(option):
     cfg_option = "%s_%s" % (_PLUGIN_ID, option)
@@ -128,7 +128,9 @@ class AutoSeek(EventPlugin):
 
     def _skip(self, song):
         print_d("Firing skip %s" % song)
-        if app.player.paused or not song or app.player.song("~filename") != song("~filename"):
+        if app.player.paused or \
+           not song or \
+           app.player.song("~filename") != song("~filename"):
             return False
 
         app.player.next()
