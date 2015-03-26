@@ -72,9 +72,9 @@ class GPodderCover(CoverSourcePlugin, HTTPDownloadMixin):
                         _score += 1
             return _score
 
-        result = [r['scaled_logo_url'] for r in sorted(results,
-                                                       key=score,
-                                                       reverse=True)]
+        result = sorted([r for r in results if score(r) > 0], key=score,
+                                                              reverse=True)
+        result = [r['scaled_logo_url'] for r in result]
         result = list(set(result))
         self.emit('search-complete', result)
 
