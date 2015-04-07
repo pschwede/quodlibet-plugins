@@ -88,14 +88,15 @@ class SkipSameArtist(PlayOrderPlugin):
 
         next = playlist.iter_next(iter)
 
+        tag = get_cfg("tag")
         songs = playlist.get()
-        current = app.player.song["artist"]
+        current = app.player.song[tag]
         found = False
         for song_number, song in enumerate(songs):
             if song == app.player.song:
                 found = True
 
-            if found and song["artist"] != current:
+            if found and song[tag] != current:
                 next = playlist.get_iter((song_number,))
                 break
 
