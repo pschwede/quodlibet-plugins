@@ -58,7 +58,7 @@ class Preferences(Gtk.VBox):
         table.attach(tag_entry, 1, 2, 0, 1)
 
         def tag_changed(scale):
-            value = scale.get_value() * 60
+            value = scale.get_text()
             set_cfg("tag", value)
             self.emit("changed")
         tag_entry.connect('changed', tag_changed)
