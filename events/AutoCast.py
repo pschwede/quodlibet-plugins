@@ -101,7 +101,7 @@ class AutoCast(EventPlugin):
     PLUGIN_DESC = ("Plays a random not yet listened podcast")
 
     def __init__(self):
-        with open(os.path.join(const.USERDIR, "feeds"), "r") as f:
+        with open(os.path.join(const.USERDIR, "feeds"), "rb") as f:
             self.__feeds = pickle.load(f)
             self.__seconds_of_music = 0
 

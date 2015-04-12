@@ -10,7 +10,7 @@
 * __AutoCast__: Creates a radio rotation between music and talk. Repeatingly
   enqueues podcast entries after playing music. The seconds of music between the
   podcasts are configurable.
-* __OPMLsupport__: Fetch podcast urls from gPodder.net. In future, there will be more general OPML support.
+* __GPodderSync__: Fetch podcast urls from gPodder.net. In future, there will be more general OPML support.
 * __gPodder cover source__: Download podcast logos from the gPodder.net API
 * __Jamendo cover source__: Download podcast logos from the Jamendo.com API
 

@@ -21,7 +21,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.browsers.audiofeeds import Feed
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-_PLUGIN_ID = "opmlsupport"
+_PLUGIN_ID = "gpoddersync"
 
 _SETTINGS = {
     "gpodder.net/name": ["_Nickname",
@@ -158,10 +158,10 @@ def fetch_gpodder(name, password, device):
 
 class OPMLsupport(SongsMenuPlugin):
     PLUGIN_ID = _PLUGIN_ID
-    PLUGIN_NAME = "OPMLsupport"
+    PLUGIN_NAME = "GPodderSync"
     PLUGIN_ICON = "gtk-jump-to"
     PLUGIN_VERSION = "1.0"
-    PLUGIN_DESC = ("Support for OPML files and gpodder.net")
+    PLUGIN_DESC = ("Sync your podcasts with gpodder.net")
 
     @classmethod
     def PluginPreferences(cls, window):
