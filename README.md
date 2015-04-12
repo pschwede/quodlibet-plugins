@@ -18,15 +18,7 @@
 ## Installation on Unix
 
 ```bash
-git clone https://github.com/pschwede/qlplugins.git ~/.quodlibet/plugins/
-```
-
-or copy the events folder to `~/.quodlibet/plugins/`:
-
-```bash
-git clone https://github.com/pschwede/qlplugins.git
-mkdir -p ~.quodlibet/plugins/events/
-cp qlplugins/events/*.py ~.quodlibet/plugins/events/
+git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins/
 ```
 
 You need to restart quodlibet to see and activate the plugins in Music-->Plugins.
