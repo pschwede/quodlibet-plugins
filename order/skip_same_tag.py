@@ -90,13 +90,28 @@ class SkipSameArtist(PlayOrderPlugin):
 
         tag = get_cfg("tag")
         songs = playlist.get()
-        current = app.player.song[tag]
+
+        try:
+            current = app.player.song[tag]
+        except KeyError:
+            current = None
+
         found = False
         for song_number, song in enumerate(songs):
-            if song == app.player.song:
+            if not found and song == app.player.song:
                 found = True
+                continue
 
-            if found and song[tag] != current:
+            if not found:
+                continue
+            else:
+                try:
+                    if song[tag] == current:
+                        continue
+                except KeyError:
+                    # not having the tag is enough to be played.
+                    print_d("Key not in song: %s" % tag)
+
                 next = playlist.get_iter((song_number,))
                 break
 
