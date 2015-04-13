@@ -75,6 +75,7 @@ class SkipSameArtist(PlayOrderPlugin):
     accelerated_name = _("_Skip same tag")
     replaygain_profiles = ["track"]
     is_shuffle = False
+    current = None
 
     def __init__(self, playlist):
         self.playlist = playlist
@@ -92,9 +93,9 @@ class SkipSameArtist(PlayOrderPlugin):
         songs = playlist.get()
 
         try:
-            current = app.player.song[tag]
+            self.current = app.player.song[tag]
         except KeyError:
-            current = None
+            print_d("Key not in song: %s" % tag)
 
         found = False
         for song_number, song in enumerate(songs):
@@ -106,7 +107,7 @@ class SkipSameArtist(PlayOrderPlugin):
                 continue
             else:
                 try:
-                    if song[tag] == current:
+                    if song[tag] == self.current:
                         continue
                 except KeyError:
                     # not having the tag is enough to be played.
