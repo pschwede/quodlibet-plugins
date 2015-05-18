@@ -13,7 +13,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import app
 from quodlibet import qltk
-from quodlibet import const
+from quodlibet import get_user_dir
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 
@@ -101,7 +101,7 @@ class AutoCast(EventPlugin):
     PLUGIN_DESC = ("Plays a random not yet listened podcast")
 
     def __init__(self):
-        with open(os.path.join(const.USERDIR, "feeds"), "rb") as f:
+        with open(os.path.join(get_user_dir(), "feeds"), "rb") as f:
             self.__feeds = pickle.load(f)
             self.__seconds_of_music = 0
 
