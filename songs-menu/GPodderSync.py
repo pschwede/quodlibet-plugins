@@ -13,9 +13,11 @@ from mygpoclient import simple
 
 from gi.repository import Gtk, GObject
 
+import quodlibet
 from quodlibet import app
 from quodlibet import const
 from quodlibet import config
+from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.browsers.audiofeeds import Feed
@@ -96,7 +98,7 @@ class Preferences(Gtk.VBox):
             device = get_cfg("gpodder.net/device")
             fetch_gpodder(name, password, device)
 
-        button = Gtk.Button(label=_("Fetch"))
+        button = Gtk.Button(label=_("Switch browser, fetch and quit."))
         button.connect("pressed", gpodder_go)
         table.attach(button, 0, 2, idx+1, idx+2)
 
@@ -106,10 +108,12 @@ class Preferences(Gtk.VBox):
 
 def update_feeds(subscriptions):
     if app.browser.name == u"Audio Feeds":
-        return
+        print_d("Please do not run this in %s" % app.browser.name)
+        tmp = app.window.browser.name
+        app.window.select_browser(browsers.browsers[0].name)
 
     feeds = []
-    with open(os.path.join(const.USERDIR, "feeds"), "rb") as f:
+    with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "rb") as f:
         feeds = pickle.load(f)
 
     subbed = frozenset([f[0]["feed"] for f in feeds])
@@ -134,7 +138,7 @@ def update_feeds(subscriptions):
         else:
             print_d("Feed could not be added: %s" % subscription)
 
-        with open(os.path.join(const.USERDIR, "feeds"), "wb") as f:
+        with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "wb") as f:
             pickle.dump(feeds, f)
 
     # quit to avoid overwriting the list we just created
