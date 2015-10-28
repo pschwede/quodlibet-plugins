@@ -16,6 +16,8 @@ git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins
 
 ## Features
 
+### General
+
 #### Autorefresh
 * Reloads the Browser view (in some search queries, by that,
   it makes sure no song is played over and over again or that the playlist
@@ -30,7 +32,7 @@ git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins
 	Currently, only bpm-tools (from Ubuntu repositories) is supported.
 
 
-## Podcasting
+### Podcasting
 
 #### GPodderSync
 * Fetch podcast urls from your account on [gPodder](http://gpodder.net) and add
@@ -45,7 +47,7 @@ git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins
 * Download podcast logos from the gPodder.net API
 
 
-## Jamendo support
+### Jamendo support
 
 #### Jamendo cover source
 * Download covers from the Jamendo.com API
