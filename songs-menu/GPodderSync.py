@@ -107,11 +107,6 @@ class Preferences(Gtk.VBox):
 
 
 def update_feeds(subscriptions):
-    if app.browser.name == u"Audio Feeds":
-        print_d("Please do not run this in %s" % app.browser.name)
-        tmp = app.window.browser.name
-        app.window.select_browser(browsers.browsers[0].name)
-
     feeds = []
     with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "rb") as f:
         feeds = pickle.load(f)
@@ -141,9 +136,7 @@ def update_feeds(subscriptions):
         with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "wb") as f:
             pickle.dump(feeds, f)
 
-    # quit to avoid overwriting the list we just created
-    app.quit()
-
+    app.browser.restore()
 
 def fetch_opml(url):
     try:
