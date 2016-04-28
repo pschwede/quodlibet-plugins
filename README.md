@@ -4,14 +4,14 @@
 
 ## Installation
 
-* Clone this repository into the plugins folder of your quodlibet home directory.
+1. Clone this repository into the plugins folder of your quodlibet home directory.
 
 ```bash
 git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins/
 ```
 
-* Restart quodlibet
-* Now you can see the new plugins in Music-->Plugins.
+2. Restart quodlibet
+3. Now you can see the new plugins in Music-->Plugins.
 
 
 ## Features
