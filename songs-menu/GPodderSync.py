@@ -98,7 +98,7 @@ class Preferences(Gtk.VBox):
             device = get_cfg("gpodder.net/device")
             fetch_gpodder(name, password, device)
 
-        button = Gtk.Button(label=_("Switch browser, fetch and quit."))
+        button = Gtk.Button(label=_("Fetch!"))
         button.connect("pressed", gpodder_go)
         table.attach(button, 0, 2, idx+1, idx+2)
 
@@ -107,36 +107,42 @@ class Preferences(Gtk.VBox):
 
 
 def update_feeds(subscriptions):
+    if app.browser.name != u"Audio Feeds":
+        print_d("Wrong browser!")
+        return
+
     feeds = []
     with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "rb") as f:
         feeds = pickle.load(f)
 
-    subbed = frozenset([f[0]["feed"] for f in feeds])
+    subbed = frozenset([f.uri for f in feeds])
+    newfeeds = list()
 
     for subscription in subscriptions:
-        if subscription in subbed:
-            print_d("Already subscribed %s" % subscription)
-            continue
-
-        print_d("Subscription: %s" % subscription)
         r = requests.get(subscription)
         if not r.status_code == 200:
             print_d("Cannot access %s - %i" % (subscription, r.status_code))
             continue
 
         feed = Feed(subscription)
-        print_d("Parsing %s" % subscription)
+        if feed.uri in subbed:
+            print_d("Feed already subscribed: %s" % subscription)
+            continue
         feed.changed = feed.parse()
         if feed:
             print_d("Appending %s" % subscription)
             feeds.append(feed)
+            newfeeds.append(feed)
         else:
             print_d("Feed could not be added: %s" % subscription)
 
-        with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "wb") as f:
-            pickle.dump(feeds, f)
+    print_d("Adding %i feeds." % len(newfeeds))
+    with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "wb") as f:
+        pickle.dump(feeds, f)
+    app.browser.reload(app.library)  # adds feeds
 
-    app.browser.restore()
+    #app.browser.restore()
+
 
 def fetch_opml(url):
     try:
@@ -144,13 +150,13 @@ def fetch_opml(url):
     except IOError:
         print_d("Failed opening OPML %s" % url)
         return []
-    GObject.idle_add(lambda : update_feeds([x.xmlUrl for x in outline]))
+    GObject.idle_add(lambda: update_feeds([x.xmlUrl for x in outline]))
 
 
 def fetch_gpodder(name, password, device):
     client = simple.SimpleClient(name, password)
     subscriptions = client.get_subscriptions(device)
-    GObject.idle_add(lambda : update_feeds(subscriptions))
+    GObject.idle_add(lambda: update_feeds(subscriptions))
 
 
 class OPMLsupport(SongsMenuPlugin):
