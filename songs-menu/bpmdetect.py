@@ -2,10 +2,43 @@
 from gi.repository import Gtk
 
 from subprocess import check_output, CalledProcessError
+from multiprocessing import Pool, cpu_count
+
+from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util import connect_obj
+
+
+def get_bpm(cmd_path):
+    cmd, path = cmd_path
+    TAG = "bpm"
+    try:
+        bpm = check_output(cmd, shell=True)
+        if bpm:
+            song = formats.MusicFile(path)
+            try:
+                assert song.can_change(TAG)
+            except AssertionError:
+                raise ValueError("File does not support bpm tags.")
+            song[TAG] = bpm
+            try:
+                assert song[TAG]
+            except KeyError:
+                raise ValueError("Couln't assign tag value.")
+            song.write()
+            song = formats.MusicFile(path)
+            try:
+                assert song[TAG]
+            except KeyError:
+                raise ValueError("Couldn't load tag value.")
+            return 'Success %s = %s' % (path, song[TAG])
+        raise ValueError("'%s' is no valid bpm value." % bpm)
+    except (CalledProcessError, ValueError), e:
+        res = "Fail: %s" % cmd
+        res += "\n%s" % e
+        return res
 
 
 class BPMCommand(object):
@@ -21,16 +54,14 @@ class BPMCommand(object):
         return res
 
     def run(self, songs):
-        for song in songs:
-            cmd = self.command % song("~filename")
-            try:
-                bpm = check_output(cmd, shell=True)
-            except CallError, e:
-                print_d("Fail: %s" % cmd)
-                print_d(e)
-            finally:
-                if bpm:
-                    song["bpm"] = check_output(self.command % song("~filename"), shell=True).rstrip()
+        p = Pool(processes=min(len(songs), cpu_count()))
+        cmds = [(self.command % s("~filename"), s("~filename")) for s in songs]
+        print_d('Running pool on %s' % cmds)
+        r = [p.apply_async(get_bpm, (cmd,)) for cmd in cmds]
+        p.close()
+        p.join()
+        for x in r:
+            print_d(str(x.get()))
 
 
 class BPMDetector(SongsMenuPlugin):
@@ -41,7 +72,7 @@ class BPMDetector(SongsMenuPlugin):
 
     commands = [
         BPMCommand("bpm-tools", ("sox -v 0.98 \"%s\" -t raw -r 44100 -e float -c 1 -"
-                                 " | bpm -f \"%%.2f\""))
+                                 " | bpm -m 30 -x 160 -f \"%%.2f\""))
         ]
 
     def __init__(self, *args, **kwargs):
