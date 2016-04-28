@@ -25,12 +25,9 @@ class MakeParty(PlaylistPlugin):
             print_d("CRITICAL: All songs need to have genre and bpm defined!")
             return
         for song in playlist:
-            try:
-                del song["rating"]
-                assert 0 <= float(song("~#rating")) <= 1
-            except KeyError:
-                song["~#rating"] = u"0"  #TODO adapt to default rating in config
-                print_d("%s had NO rating, set to zero." % (song["title"]))
+            if not song("~#rating"):
+                song["~#rating"] = float(0.0)
+            song.write()
 
         fresh = set(playlist)
         playlist.clear()
@@ -44,24 +41,22 @@ class MakeParty(PlaylistPlugin):
             ranked = sorted(fresh, key=lambda x: float(x('~#bpm')) + 80*float(x("~#rating")))
 
             # pick a genre
-            while len(genres) > 1:
+            genre = choice(genres)
+            while genre == old_genre:
                 genre = choice(genres)
-                if genre != old_genre:
-                    old_genre = genre
-                    break
             
             # add fast songs of same genre
             for song in ranked[::-1]:
                 if song["genre"] != genre:
-                    print_d("X %s, %s has NOT genre %s" % (song["genre"], song["title"], genre))
+                    #print_d("X %s, %s has NOT genre %s" % (song["genre"], song["title"], genre))
                     reasons['genre'] += 1
                     continue
                 if song in picked:
-                    print_d("X %s, %s has already been picked" % (song["genre"], song["title"]))
+                    #print_d("X %s, %s has already been picked" % (song["genre"], song["title"]))
                     reasons['picked'] += 1
                     continue
 
-                print_d("O %s, %s HAS genre %s and was not picked yet." % (song["title"], song["genre"], genre))
+                #print_d("O %s, %s HAS genre %s and was not picked yet." % (song["title"], song["genre"], genre))
                 playlist.append(song)
                 picked.add(song)
 
@@ -77,18 +72,18 @@ class MakeParty(PlaylistPlugin):
                 picked.add(song)
                 break
 
-            for song in picked:
-                fresh.remove(song)
-
             # if too few were picked: add one random but of same genre
-            if fresh and len(picked)-1 < limit:
+            if len(picked)-1 < limit:
                 if reasons['genre'] < reasons['picked']:
                     for song in shuffle(fresh):
                         if song["genre"] == genre:
                             playlist.append(song)
                             picked.add(song)
 
-            print_d([(x['title'], x['genre']) for x in picked])
+            for song in picked:
+                fresh.remove(song)
+
+            #print_d([(x['title'], x['genre']) for x in picked])
         playlist.finalize()
         return True
 
