@@ -67,7 +67,7 @@ class Preferences(Gtk.VBox):
                         True, True, 0)
 
 
-class SkipSameArtist(PlayOrderPlugin):
+class SkipSameTag(PlayOrderPlugin):
     PLUGIN_ID = "Skip same tag"
     PLUGIN_NAME = _("Skip same tag")
     name = "skip_same_tag"
@@ -87,25 +87,25 @@ class SkipSameArtist(PlayOrderPlugin):
         if len(playlist) < 2:
             return playlist.iter_next(iter)
 
-        next = playlist.iter_next(iter)
-
         tag = get_cfg("tag")
-        songs = playlist.get()
+        played_song = app.player.song
 
         try:
-            self.current = app.player.song[tag]
+            self.current = played_song[tag]
         except KeyError:
             print_d("Key not in song: %s" % tag)
 
+
+        next = None
         found = False
+        songs = playlist.get()
+        print_d("%i songs in playlist." % len(songs))
         for song_number, song in enumerate(songs):
-            if not found and song == app.player.song:
+            if song == played_song:
                 found = True
                 continue
 
-            if not found:
-                continue
-            else:
+            if found:
                 try:
                     if song[tag] == self.current:
                         continue
@@ -113,25 +113,25 @@ class SkipSameArtist(PlayOrderPlugin):
                     # not having the tag is enough to be played.
                     print_d("Key not in song: %s" % tag)
 
-                next = playlist.get_iter((song_number,))
+            if found:
+                next = playlist.get_iter((song_number,)) or playlist.get_iter((0,))
                 break
 
+        if not found or not next:
+            for song_number, song in enumerate(songs):
+                try:
+                    if song[tag] != self.current:
+                        next = playlist.get_iter((song_number,))
+                        break
+                except KeyError:
+                    # not having the tag is enough to be played.
+                    print_d("Key not in song: %s" % tag)
+
+        print_d("New song: %s" % next)
         return next
 
-    def previous(self, playlist, iter):
-        if len(playlist) == 0:
-            return None
-
-        if iter is None:
-            return playlist[(len(playlist) - 1,)].iter
-
-        path = max(1, playlist.get_path(iter).get_indices()[0])
-        try:
-            return playlist.get_iter((path - 1,))
-        except ValueError:
-            if playlist.repeat:
-                return playlist[(len(playlist) - 1,)].iter
-        return None
+    def previous(self, *args):
+        return super(SkipSameTag, self).previous(*args)
 
     @classmethod
     def PluginPreferences(cls, window):
