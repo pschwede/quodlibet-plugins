@@ -14,9 +14,9 @@ class AutoRefresh(EventPlugin):
     PLUGIN_NAME = 'AutoRefresh'
     PLUGIN_DESC = ("Refreshes the currently shown browser query when a song "
                    "has ended.")
-    PLUGIN_VERSION = "1"
+    PLUGIN_VERSION = "1.1"
 
     def plugin_on_song_ended(self, song, skipped):
         """action on song ended"""
         print "[Auto Refresh] Refreshing.."
-        GObject.timeout_add(1000, app.window.browser.activate)
+        GObject.timeout_add(1500, app.window.browser.activate)
