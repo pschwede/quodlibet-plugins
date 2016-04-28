@@ -133,7 +133,9 @@ class AutoSeek(EventPlugin):
            app.player.song("~filename") != song("~filename"):
             return False
 
+        oldskips = song("~#skipcount")
         app.player.next()
+        song.update({"~#skipcount": oldskips})
         return False
 
     @classmethod
