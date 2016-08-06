@@ -8,6 +8,7 @@ from gi.repository import Gtk, GLib, GObject
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.util.dprint import print_d
 from quodlibet import qltk
 from quodlibet import config
 

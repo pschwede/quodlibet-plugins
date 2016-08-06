@@ -19,6 +19,7 @@ from quodlibet import const
 from quodlibet import config
 from quodlibet import browsers
 from quodlibet import qltk
+from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.browsers.audiofeeds import Feed
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

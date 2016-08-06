@@ -15,6 +15,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet import get_user_dir
 from quodlibet import config
+from quodlibet.util.dprint import print_d
 from quodlibet.plugins.events import EventPlugin
 
 _PLUGIN_ID = "autocast"
@@ -101,9 +102,8 @@ class AutoCast(EventPlugin):
     PLUGIN_DESC = ("Plays a random not yet listened podcast")
 
     def __init__(self):
-        with open(os.path.join(get_user_dir(), "feeds"), "rb") as f:
-            self.__feeds = pickle.load(f)
-            self.__seconds_of_music = 0
+        self.load()
+        self.__seconds_of_music = 0
 
     def plugin_on_song_started(self, song):
         if not song or not app.player:
@@ -116,52 +116,77 @@ class AutoCast(EventPlugin):
             return False
         if song["~filename"].startswith("http://"):
             song["~#laststarted"] = int(time.time())
+
+            # DEBUG: podcast still in storage?
+            found = False
+            for f in self.__feeds:
+                for s in f:
+                    if s['~filename'] == song['~filename']:
+                        found = True
+                        break
+                if found:
+                    break
+            print_d("Song in __feeds: %s" % found)
+
             app.librarian.changed([song])
+            self.write()
             if get_cfg("minmusic") > 1:
                 return False
+        track = self.get_track()
+        if track:
+            self.enqueue_track(track)
 
-        track = self.get_track(current_song=song)
-        self.enqueue_track(track)
+    def write(self):
+        with open(os.path.join(get_user_dir(), "feeds"), "wb") as f:
+            pickle.dump(self.__feeds, f)
 
-    def get_track(self, current_song,
-                  preference={"~#length": -1.0, "~#added": 1.0}):
+    def load(self):
+        with open(os.path.join(get_user_dir(), "feeds"), "rb") as f:
+            self.__feeds = pickle.load(f)
+
+    @staticmethod
+    def pick_one_of_top(items, key):
+        s_items = sorted(
+                items,
+                key=key,
+                reverse=True
+                )[:max(1,len(items)/5)]
+        print_d(str([key(x) for x in s_items]))
+        return random.choice(s_items)
+
+    def get_track(self, preference={"~#length": -1./60/30, "~#added": 1000./time.time(), "~#size": -1.5e-7}):
         items = list()
-        filtr = lambda x: '~#playcount' not in x or \
-                          '~#skipcount' not in x or \
-                          '~#laststarted' > time.time() - 1000000
-        for feed in self.__feeds:
+        def filtr(x):
+            return not bool(x('~#laststarted')) and not bool(x('~#lastplayed'))
+        def weight(x):
+            num_preferences = len(preference)
+            res = 1./num_preferences
+            for key in preference:
+                val = float(x(key)) / num_preferences
+                if not val:
+                    val = 0.5
+                res += preference[key] * val
+            return res
+
+        for feed in [f for f in self.__feeds]:
+            if not feed:
+                print_d("Not playing %s.." % feed)
+                continue
             filtered = [x for x in feed if filtr(x)]
             if not filtered:
+                print_d("Not playing %s.." % feed[0])
                 continue
-            i = random.choice(filtered)
-            items.append(i)
-            # for i in f:
-                # if filtr(i):
-                    # items.append(i)
-                # items.append(i)
+            items.append(self.pick_one_of_top(filtered, weight))
         if items:
-            item = random.choice(items)
-            return item
+            print_d("Picking one podcast out of %i:" % len(items))
+            podcast = self.pick_one_of_top(items, weight)
+            print_d(str(podcast))
+            return podcast
+        print_d("There aren't any items I could play.")
         return None
-        """
-        NEW: Take the newest entry. BUT: laststarted won't be saved that way.
-        filtr = lambda x: '~#laststarted' not in x
-        items = []
-        for feed_items in self.__feeds:
-           items += [f for f in feed_items if filtr(f)]
-        reference = {}
-        for key in preference:
-           reference[key] = max([i[key] for i in items if key in i])
-        items = sorted(items, key=lambda x: -score(x, preference, reference))
-        for item in items:
-           if item["~filename"] == current_song["~filename"]:
-            continue
-           break
-        return item
-        """
 
     def enqueue_track(self, track):
-        if track.can_add:
+        if track and track.can_add:
             app.window.playlist.enqueue([track])
             if app.player.song is None:
                 app.player.next()
@@ -170,6 +195,14 @@ class AutoCast(EventPlugin):
         if not song:
             return False
         if song["~filename"].startswith("http://"):  # podcast
+            song["~#lastplayed"] = int(time.time())
+            print_d("Before write: %s" % dict(song))
+            self.write()
+            self.load()
+            for feed in self.__feeds:
+                for s in feed:
+                    if song["~filename"] == s["~filename"]:
+                        print_d("Found after write: %s" % dict(song))
             self.__seconds_of_music = 0
         elif app.player.get_position() > 0:
                 self.__seconds_of_music += app.player.get_position() / 1000

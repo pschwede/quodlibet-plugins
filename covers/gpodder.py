@@ -9,6 +9,7 @@ from os import path
 from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
+from quodlibet.util.print_d import print_d
 from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename
@@ -52,11 +53,11 @@ class GPodderCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     def album_data(self, message, json, data=None):
         if not json:
-            print_d('Server did not return valid JSON')
+            #print_d('Server did not return valid JSON')
             return self.emit('search-complete', [])
         results = json
         if not results:
-            print_d('Album data is not available')
+            #print_d('Album data is not available')
             return self.emit('search-complete', [])
 
         def score(r):
