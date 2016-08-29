@@ -3,6 +3,7 @@ from gi.repository import Gtk, GObject
 from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
+from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins.playorder import PlayOrderPlugin
 
@@ -52,7 +53,11 @@ class Preferences(Gtk.VBox):
                          xoptions=Gtk.AttachOptions.FILL |
                          Gtk.AttachOptions.SHRINK)
         # value, lower, upper, step_increment, page_increment
-        tag_entry = Gtk.Entry()
+
+        def is_valid(x):
+            return len(str(app.player.song(x))) > 0
+
+        tag_entry = ValidatingEntry(validator=is_valid)
         tag_entry.set_text(get_cfg("tag"))
 
         labels["tag"].set_mnemonic_widget(tag_entry)
@@ -60,8 +65,10 @@ class Preferences(Gtk.VBox):
 
         def tag_changed(scale):
             value = scale.get_text()
-            set_cfg("tag", value)
-            self.emit("changed")
+            if is_valid(value):
+                set_cfg("tag", value)
+                self.emit("changed")
+
         tag_entry.connect('changed', tag_changed)
 
         self.pack_start(qltk.Frame("Preferences", child=table),
@@ -92,9 +99,9 @@ class SkipSameTag(PlayOrderPlugin):
         played_song = app.player.song
 
         try:
-            self.current = played_song[tag]
+            self.current = played_song(tag)
         except KeyError:
-            print_d("Key not in song: %s" % tag)
+            print_d("Key not in song while retreiving current tag value: %s" % tag)
 
 
         next = None
@@ -108,11 +115,11 @@ class SkipSameTag(PlayOrderPlugin):
 
             if found:
                 try:
-                    if song[tag] == self.current:
+                    if song(tag) == self.current:
                         continue
                 except KeyError:
                     # not having the tag is enough to be played.
-                    print_d("Key not in song: %s" % tag)
+                    print_d("Key not in song while looking for current song: %s" % tag)
 
             if found:
                 next = playlist.get_iter((song_number,)) or playlist.get_iter((0,))
@@ -121,12 +128,13 @@ class SkipSameTag(PlayOrderPlugin):
         if not found or not next:
             for song_number, song in enumerate(songs):
                 try:
-                    if song[tag] != self.current:
+                    if song(tag) != self.current:
                         next = playlist.get_iter((song_number,))
                         break
                 except KeyError:
                     # not having the tag is enough to be played.
-                    print_d("Key not in song: %s" % tag)
+                    print_d("Key not in song while looking for next song: %s" % tag)
+                    next = playlist.get_iter((song_number,))
 
         print_d("New song: %s" % next)
         return next
