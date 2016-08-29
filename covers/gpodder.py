@@ -9,7 +9,7 @@ from os import path
 from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
-from quodlibet.util.print_d import print_d
+from quodlibet.util.dprint import print_d
 from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename
