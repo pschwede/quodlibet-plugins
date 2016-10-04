@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014 Peter Schwede
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import app
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk import Icons
 
@@ -18,7 +19,6 @@ class MakeParty(PlaylistPlugin):
 
     def plugin_playlist(self, playlist):
         fresh = set(playlist)
-        playlist.clear()
         old_genre = None
         while len(fresh) > 0:
             # prepare set of genres and a sorted list by bpm
@@ -64,7 +64,7 @@ class MakeParty(PlaylistPlugin):
                     reasons['picked'] += 1
                     continue
 
-                playlist.append(song)
+                app.window.playlist.enqueue([song])
                 picked.add(song)
 
                 limit -= 1
@@ -75,7 +75,7 @@ class MakeParty(PlaylistPlugin):
             for song in ranked:
                 if song["genre"] != genre or song in picked:
                     continue
-                playlist.append(song)
+                app.window.playlist.enqueue([song])
                 picked.add(song)
                 break
 
@@ -84,14 +84,13 @@ class MakeParty(PlaylistPlugin):
                 if reasons['genre'] < reasons['picked']:
                     for song in shuffle(fresh):
                         if song["genre"] == genre:
-                            playlist.append(song)
+                            app.window.playlist.enqueue([song])
                             picked.add(song)
 
             for song in picked:
                 fresh.remove(song)
 
-        playlist.finalize()
         return True
 
     def plugin_handles(self, playlists):
-        return len(playlists) == 1 and len(playlists[0].songs) > 1
+        return len(playlists) >= 1 and len(playlists[0].songs) > 1

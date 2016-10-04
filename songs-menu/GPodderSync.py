@@ -114,13 +114,21 @@ def update_feeds(subscriptions):
 
     feeds = []
     with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "rb") as f:
-        feeds = pickle.load(f)
+        try:
+            feeds = pickle.load(f)
+        except:
+            print_d("Couldn't read feeds.")
 
     subbed = frozenset([f.uri for f in feeds])
     newfeeds = list()
 
     for subscription in subscriptions:
-        r = requests.get(subscription)
+        try:
+            r = requests.get(subscription)
+        except requests.exceptions.ConnectionError, e:
+            print_d("ConnectionError %s - %s" % (subscription, e));
+            continue
+
         if not r.status_code == 200:
             print_d("Cannot access %s - %i" % (subscription, r.status_code))
             continue

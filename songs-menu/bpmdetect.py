@@ -43,9 +43,10 @@ def get_bpm(cmd_path):
 
 
 class BPMCommand(object):
-    def __init__(self, title, command):
+    def __init__(self, title, command, terminal=False):
         self.title = title
         self.command = command
+        self.terminal = terminal
 
     def exists(self):
         res = True
@@ -55,6 +56,8 @@ class BPMCommand(object):
         return res
 
     def run(self, songs):
+        if terminal:
+            return
         p = Pool(processes=min(len(songs), cpu_count()))
         cmds = [(self.command % s("~filename"), s("~filename")) for s in songs]
         print_d('Running pool on %s' % cmds)

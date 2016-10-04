@@ -1,5 +1,6 @@
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
