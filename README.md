@@ -1,18 +1,15 @@
 # QuodLibet Plugin Collection
 
-(only tested on linux)
-
 ## Installation
 
 1. Clone this repository into the plugins folder of your quodlibet home directory.
 
-```bash
+    ```bash
 git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins/
 ```
 
 2. Restart quodlibet
-3. Now you can see the new plugins in Music-->Plugins.
-
+3. Now you can see and enable the new plugins in File->Plugins.
 
 ## Features
 
@@ -22,7 +19,6 @@ git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins
 makes sure no song is played over and over again or that the playlist doesn't
 stop)
 
-
 ### Playback
 
 **AutoSeek** Plays only a few seconds of a track. Skipping rate and relative
@@ -30,7 +26,6 @@ seek position are configurable.
 
 **Detector BPM** Apply BPM analysis to songs and write it to the tag 'bpm'.
 Currently, only bpm-tools (from Ubuntu repositories) is supported.
-
 
 ### Podcasting
 
@@ -41,9 +36,13 @@ Currently, only bpm-tools (from Ubuntu repositories) is supported.
 podcast entries after play music has been played.  The seconds of music between
 the podcasts can be configured.
 
-
 ### Covers
 
 **gPodder cover source** Download podcast logos from the gPodder.net API
 
 **Jamendo cover source** Download covers from the Jamendo.com API
+
+
+## Guarantee
+
+These plugins have only been tested on linux.
