@@ -4,6 +4,7 @@ from gi.repository import Gtk
 from subprocess import check_output, CalledProcessError
 from multiprocessing import Pool, cpu_count
 
+from quodlibet import _
 from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -56,7 +57,7 @@ class BPMCommand(object):
         return res
 
     def run(self, songs):
-        if terminal:
+        if self.terminal:
             return
         p = Pool(processes=min(len(songs), cpu_count()))
         cmds = [(self.command % s("~filename"), s("~filename")) for s in songs]

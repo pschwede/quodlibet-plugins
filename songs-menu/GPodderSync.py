@@ -14,6 +14,7 @@ from mygpoclient import simple
 from gi.repository import Gtk, GObject
 
 import quodlibet
+from quodlibet import _
 from quodlibet import app
 from quodlibet import const
 from quodlibet import config
@@ -99,7 +100,8 @@ class Preferences(Gtk.VBox):
             device = get_cfg("gpodder.net/device")
             fetch_gpodder(name, password, device)
 
-        button = Gtk.Button(label=_("Fetch!"))
+        correct_browser = app.browser.name == u"Audio Feeds"
+        button = Gtk.Button(label=_("Fetch!" if correct_browser else "(Fetch) Please switch to a different browser!"), sensitive=correct_browser)
         button.connect("pressed", gpodder_go)
         table.attach(button, 0, 2, idx+1, idx+2)
 

@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk import Icons
@@ -18,6 +19,17 @@ class MakeParty(PlaylistPlugin):
     PLUGIN_ICON = Icons.SYSTEM_RUN
 
     def plugin_playlist(self, playlist):
+        def sort_key(x):
+            try:
+                bpm = float(x('~#bpm'))
+            except (ValueError, KeyError):
+                bpm = 100.
+            try:
+                rating = float(x("~#rating"))
+            except (ValueError, KeyError):
+                rating = 0.5
+            return bpm + 80*rating
+
         fresh = set(playlist)
         old_genre = None
         while len(fresh) > 0:
@@ -25,31 +37,20 @@ class MakeParty(PlaylistPlugin):
             limit = 2
             picked = set()
             reasons = {'genre': 0, 'picked': 0}
-            genres = set()
+
+            genres = [""]
             for x in fresh:
                 try:
-                    genres.add(x["genre"])
+                    if x["genre"] != old_genre:
+                        genres.append(x["genre"])
                 except KeyError:
-                    genres.add("")
-            genres = list(genres)
-
-            def sort_key(x):
-                try:
-                    bpm = float(x('~#bpm'))
-                except (ValueError, KeyError):
-                    bpm = 100.
-                try:
-                    rating = float(x("~#rating"))
-                except (ValueError, KeyError):
-                    rating = 0.5
-                return bpm + 80*rating
+                    pass
+            genres = list(set(genres))
 
             ranked = sorted(fresh, key=sort_key)
 
             # pick a genre
             genre = choice(genres)
-            while genre == old_genre:
-                genre = choice(genres)
             
             # add fast songs of same genre
             for song in ranked[::-1]:
@@ -73,8 +74,14 @@ class MakeParty(PlaylistPlugin):
 
             # pick a slow song
             for song in ranked:
-                if song["genre"] != genre or song in picked:
+                if song in picked:
                     continue
+                try:
+                    if song["genre"] != genre:
+                        continue
+                except KeyError:
+                    if "" != genre:
+                        continue
                 app.window.playlist.enqueue([song])
                 picked.add(song)
                 break
@@ -82,10 +89,9 @@ class MakeParty(PlaylistPlugin):
             # if too few were picked: add one random but of same genre
             if len(picked)-1 < limit:
                 if reasons['genre'] < reasons['picked']:
-                    for song in shuffle(fresh):
-                        if song["genre"] == genre:
-                            app.window.playlist.enqueue([song])
-                            picked.add(song)
+                    song = choice([x for x in fresh if x["genre"] == genre])
+                    app.window.playlist.enqueue([song])
+                    picked.add(song)
 
             for song in picked:
                 fresh.remove(song)

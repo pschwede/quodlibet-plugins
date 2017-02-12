@@ -154,7 +154,7 @@ class AutoCast(EventPlugin):
         print_d(str([key(x) for x in s_items]))
         return random.choice(s_items)
 
-    def get_track(self, preference={"~#length": -1./60/30, "~#added": 1000./time.time(), "~#size": -1.5e-7}):
+    def get_track(self, preference={"~#length": -5./60/30, "~#added": 1000./time.time(), "~#size": -1.5e-7}):
         items = list()
         def filtr(x):
             return not bool(x('~#laststarted')) and not bool(x('~#lastplayed'))
@@ -165,7 +165,7 @@ class AutoCast(EventPlugin):
                 val = float(x(key)) / num_preferences
                 if not val:
                     val = 0.5
-                res += preference[key] * val
+                res = max(preference[key] * val, res)
             return res
 
         for feed in [f for f in self.__feeds]:
@@ -179,7 +179,8 @@ class AutoCast(EventPlugin):
             items.append(self.pick_one_of_top(filtered, weight))
         if items:
             print_d("Picking one podcast out of %i:" % len(items))
-            podcast = self.pick_one_of_top(items, weight)
+            #podcast = self.pick_one_of_top(items, weight)
+            podcast = random.choice(items)
             print_d(str(podcast))
             return podcast
         print_d("There aren't any items I could play.")

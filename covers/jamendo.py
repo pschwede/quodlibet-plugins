@@ -9,6 +9,7 @@ import json
 from os import path
 from gi.repository import Soup, GLib
 
+from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.dprint import print_d
 from quodlibet.util.http import download_json
