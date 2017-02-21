@@ -4,6 +4,8 @@
 
 from gi.repository import GObject
 
+from quodlibet import _
+from quodlibet.util.dprint import print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import app
 
@@ -18,5 +20,5 @@ class AutoRefresh(EventPlugin):
 
     def plugin_on_song_ended(self, song, skipped):
         """action on song ended"""
-        print "[Auto Refresh] Refreshing.."
+        print_d("[Auto Refresh] Refreshing..")
         GObject.timeout_add(1500, app.window.browser.activate)

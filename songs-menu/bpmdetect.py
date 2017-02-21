@@ -37,7 +37,7 @@ def get_bpm(cmd_path):
                 raise ValueError("Couldn't load tag value.")
             return 'Success %s = %s' % (path, song[TAG])
         raise ValueError("'%s' is no valid bpm value." % bpm)
-    except (CalledProcessError, ValueError), e:
+    except (CalledProcessError, ValueError) as e:
         res = "Fail: %s" % cmd
         res += "\n%s" % e
         return res

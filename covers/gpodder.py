@@ -87,7 +87,7 @@ class GPodderCover(CoverSourcePlugin, HTTPDownloadMixin):
         def search_complete(self, res):
             self.disconnect(sci)
             if res:
-                print res
+                print_d(res)
                 self.download(Soup.Message.new('GET', res[0]))
             else:
                 return self.fail('No cover was found')

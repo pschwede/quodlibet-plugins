@@ -5,7 +5,7 @@
 # published by the Free Software Foundation
 
 import os.path
-import cPickle as pickle
+import pickle
 
 import opml
 import requests
@@ -127,7 +127,7 @@ def update_feeds(subscriptions):
     for subscription in subscriptions:
         try:
             r = requests.get(subscription)
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             print_d("ConnectionError %s - %s" % (subscription, e));
             continue
 
