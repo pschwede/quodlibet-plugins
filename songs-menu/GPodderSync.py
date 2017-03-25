@@ -22,7 +22,7 @@ from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet.browsers.audiofeeds import Feed, 
+from quodlibet.browsers.audiofeeds import Feed
 from quodlibet.browsers.audiofeeds import AudioFeeds
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -40,7 +40,6 @@ _SETTINGS = {
                            ""]
 }
 
-correct_browser = isinstance(app.browser, AudioFeeds)
 
 def get_cfg(option):
     cfg_option = "%s_%s" % (_PLUGIN_ID, option)
@@ -62,6 +61,8 @@ class Preferences(Gtk.VBox):
 
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
+
+        correct_browser = not isinstance(app.browser, AudioFeeds)
 
         table = Gtk.Table(2, 2)
         table.set_col_spacings(6)
@@ -102,7 +103,6 @@ class Preferences(Gtk.VBox):
             device = get_cfg("gpodder.net/device")
             fetch_gpodder(name, password, device)
 
-        correct_browser = app.browser.name == u"Audio Feeds"
         button = Gtk.Button(label=_("Fetch!" if correct_browser else "(Fetch) Please switch to a different browser!"), sensitive=correct_browser)
         button.connect("pressed", gpodder_go)
         table.attach(button, 0, 2, idx+1, idx+2)
@@ -112,10 +112,6 @@ class Preferences(Gtk.VBox):
 
 
 def update_feeds(subscriptions):
-    if !correct_browser:
-        print_d("Please open the Audio Feeds browser!")
-        return
-
     feeds = []
     with open(os.path.join(quodlibet.get_user_dir(), "feeds"), "rb") as f:
         try:
