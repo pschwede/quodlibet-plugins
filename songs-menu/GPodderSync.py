@@ -22,7 +22,8 @@ from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet.browsers.audiofeeds import Feed
+from quodlibet.browsers.audiofeeds import Feed, 
+from quodlibet.browsers.audiofeeds import AudioFeeds
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 _PLUGIN_ID = "gpoddersync"
@@ -39,6 +40,7 @@ _SETTINGS = {
                            ""]
 }
 
+correct_browser = isinstance(app.browser, AudioFeeds)
 
 def get_cfg(option):
     cfg_option = "%s_%s" % (_PLUGIN_ID, option)
@@ -110,8 +112,8 @@ class Preferences(Gtk.VBox):
 
 
 def update_feeds(subscriptions):
-    if app.browser.name != u"Audio Feeds":
-        print_d("Wrong browser!")
+    if !correct_browser:
+        print_d("Please open the Audio Feeds browser!")
         return
 
     feeds = []
