@@ -5,7 +5,7 @@
 1. Clone this repository into the plugins folder of your quodlibet home directory.
 
 ```bash
-git clone https://github.com/pschwede/quodlibet-plugins.git ~/.quodlibet/plugins/
+git clone https://github.com/pschwede/quodlibet-plugins.git ~/.config/quodlibet/plugins
 ```
 
 2. Restart quodlibet
