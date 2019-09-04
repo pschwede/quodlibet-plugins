@@ -24,9 +24,6 @@ stop)
 **AutoSeek.** Plays only a few seconds of a track. Skipping rate and relative
 seek position are configurable.
 
-**Detector BPM.** Apply BPM analysis to songs and write it to the tag 'bpm'.
-Currently, only bpm-tools (from Ubuntu repositories) is supported.
-
 **Skip same tag.** The next song played won't have the same value on the configured tag.
 
 ### Podcasting
@@ -47,6 +44,9 @@ the podcasts can be configured.
 ### Tags
 
 **SyncMixxx.** Copy rating metadata into Mixxx database.
+
+**Detector BPM.** Apply BPM analysis to songs and write it to the tag 'bpm'.
+Currently, only bpm-tools (from Ubuntu repositories) is supported.
 
 ## Guarantee
 
