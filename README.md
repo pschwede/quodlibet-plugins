@@ -15,17 +15,19 @@ git clone https://github.com/pschwede/quodlibet-plugins.git ~/.config/quodlibet/
 
 ### GUI
 
-**Autorefresh** reloads the Browser view (in some search queries, by that, it
+**Autorefresh.** reloads the Browser view (in some search queries, by that, it
 makes sure no song is played over and over again or that the playlist doesn't
 stop)
 
 ### Playback
 
-**AutoSeek** Plays only a few seconds of a track. Skipping rate and relative
+**AutoSeek.** Plays only a few seconds of a track. Skipping rate and relative
 seek position are configurable.
 
-**Detector BPM** Apply BPM analysis to songs and write it to the tag 'bpm'.
+**Detector BPM.** Apply BPM analysis to songs and write it to the tag 'bpm'.
 Currently, only bpm-tools (from Ubuntu repositories) is supported.
+
+**Skip same tag.** The next song played won't have the same value on the configured tag.
 
 ### Podcasting
 
@@ -38,13 +40,13 @@ the podcasts can be configured.
 
 ### Covers
 
-**gPodder cover source** Download podcast logos from the gPodder.net API
+**gPodder cover source.** Download podcast logos from the gPodder.net API
 
-**Jamendo cover source** Download covers from the Jamendo.com API
+**Jamendo cover source.** Download covers from the Jamendo.com API
 
 ### Tags
 
-**SyncMixxx** Copy rating metadata into Mixxx database.
+**SyncMixxx.** Copy rating metadata into Mixxx database.
 
 ## Guarantee
 
