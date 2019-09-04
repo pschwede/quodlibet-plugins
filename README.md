@@ -42,6 +42,9 @@ the podcasts can be configured.
 
 **Jamendo cover source** Download covers from the Jamendo.com API
 
+### Tags
+
+**SyncMixxx** Copy rating metadata into Mixxx database.
 
 ## Guarantee
 
