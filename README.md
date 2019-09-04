@@ -31,10 +31,10 @@ Currently, only bpm-tools (from Ubuntu repositories) is supported.
 
 ### Podcasting
 
-**GPodderSync** Fetch podcast urls from your account on
+**GPodderSync.** Fetch podcast urls from your account on
 [gPodder](http://gpodder.net) and add them to QL's Audio Feeds.
 
-**AutoCast** Create a radio rotation between music and talk.  It enqueues
+**AutoCast.** Create a radio rotation between music and talk.  It enqueues
 podcast entries after play music has been played.  The seconds of music between
 the podcasts can be configured.
 
